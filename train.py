@@ -13,19 +13,26 @@ def main(*args):
     # Hyper parameters
     training_steps = 1000000
     valid_step = 100
-    num_encoder_units = 512
+    num_hidden_units = 512
 
     dataset = utils.DataSet('data/head_cleaned.smi')
-    model = Model(num_encoder_units, 'gru', 3)
+    model = Model(num_hidden_units, 'gru', 3)
 
     with tf.Session() as sess:
         tf.global_variables_initializer().run()
         training_batch, sequence_lens = dataset.get_batch(FLAGS.batch_size, 'train')
-        encoder_outputs = sess.run(model.encoder_outputs,feed_dict={
-                        model.encoder_inputs:training_batch,
-                        model.encoder_inputs_length: sequence_lens
-                })
-        print(encoder_outputs)
+        decoder_pred, _, loss = sess.run([model.decoder_pred_train,model.updates,model.loss],
+                                feed_dict={
+                                    model.encoder_inputs : training_batch,
+                                    model.encoder_inputs_length : sequence_lens,
+                                    model.decoder_inputs : training_batch,
+                                    model.decoder_inputs_length : sequence_lens
+                                })
+        print(loss)
+        print(decoder_pred.shape)
+        # loss, pred = model.train(sess, training_batch, sequence_lens, training_batch, sequence_lens)
+        # print(pred.shape)
+        # print(encoder_outputs)
         # print(training_batch)
         # for step in range(training_steps):
         #     if (step % valid_step) == 0:

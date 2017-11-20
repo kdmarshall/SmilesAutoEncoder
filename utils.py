@@ -17,7 +17,7 @@ EOS_ID = VOCAB_SIZE - 3
 GO_ID = VOCAB_SIZE - 2
 PAD_ID = VOCAB_SIZE - 1
 MIN_CHARS = 20
-MAX_CHARS = 100 + 2
+MAX_CHARS = 100
 
 
 class DataSet(object):
@@ -37,8 +37,8 @@ class DataSet(object):
             dense integer representation.
         """
         char_list = list(smiles)
-        encoded = [GO_ID]+[VOCAB.index(c) for c in char_list] + [EOS_ID]
-        # encoded = [VOCAB.index(c) for c in char_list]
+        # encoded = [GO_ID]+[VOCAB.index(c) for c in char_list] + [EOS_ID]
+        encoded = [VOCAB.index(c) for c in char_list]
         encoded_len = len(encoded)
         pad_len = MAX_CHARS - encoded_len
         if pad_len > 0:
